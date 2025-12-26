@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { API_URL } from './api'
 import './App.css'
+import { ssrExportNameKey } from 'vite/module-runner';
 
 function App() {
   const [ping, setPing] = useState("");
@@ -63,34 +64,36 @@ function App() {
   }
 
   const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
   
-    const reader = new FileReader();
+      Array.from(files).forEach((file) => {
+      const reader = new FileReader();
   
-    reader.onload = () => {
-      const csvText = reader.result;
-      setText(csvText); // ✅ сохраняем сырой CSV в state
-  
-      const lines = csvText.split("\n");
-      const dataLines = lines.slice(1);
-  
-      const parsed = dataLines
-      .filter(line => line.trim() !== "")
-      .map(line => {
-        const [date, category, amount] = line.split(",");
-  
-        return {
-          date: date.trim(),
-          category: category.trim(),
-          amount: Number(amount.trim())
-        };
-      });
-  
-      setCsvExpenses(parsed); // ✅ сохраняем таблицу
-    };
-  
-    reader.readAsText(file);
+      reader.onload = () => {
+        const csvText = reader.result;
+        // setText(csvText); // ✅ сохраняем сырой CSV в state
+    
+        const lines = csvText.split("\n");
+        const dataLines = lines.slice(1);
+    
+        const parsed = dataLines
+        .filter(line => line.trim() !== "")
+        .map(line => {
+          const [date, category, amount] = line.split(",");
+    
+          return {
+            date: date.trim(),
+            category: category.trim(),
+            amount: Number(amount.trim())
+          };
+        });
+    
+        setCsvExpenses(prev => [...prev, ...parsed]); // ✅ сохраняем таблицу
+      };
+      
+      reader.readAsText(file);
+    });
   };
   
   // форма
@@ -114,6 +117,7 @@ function App() {
       setCategory('')
       setAmount('')
     }
+
 
     return (
       <form onSubmit={handleSubmit}>
@@ -139,6 +143,8 @@ function App() {
     )
   }
     
+  const allExpenses = [...csvExpenses, ...expenses];
+
   const hasExpenses = expenses.some((expense) => {
     if ( expense.amount > 0) {
       return true;
@@ -163,25 +169,32 @@ function App() {
     return sum + e.amount
   }, 0);
 
-  const totalByCategory = expenses.reduce((acc, expense) => {
-    const category = expense.category
-    const amount = expense.amount
+  useEffect(() => {
+    const totalByCategory = allExpenses.reduce((acc, expense) => {
+      const cat = expense.category
 
-    if(!acc[category]) {
-      acc[category] = 0
-    }
-    
-    acc[category] += amount
-    return acc
-  }, []);
+      if(!acc[cat]) {
+        acc[cat] = 0;
+      }
+      acc[cat] += Number(expense.amount);
+      return acc;
+    }, {});
+
+    const totalSum = allExpenses.reduce((acc, e) => acc +
+    Number(e.amount), 0);
+
+    setTotals({ total: totalSum, byCategory: totalByCategory });
+
+  }, [csvExpenses, manualExpenses]);
 
   const categories = Array.from(
-    new Set(expenses.map(e => e.category))
+    new Set(allExpenses.map(e => e.category))
   );
 
-  const filteredExpenses = selectedCategory === 'all' 
-    ? expenses
-    : expenses.filter(expense => expense.category === categories)
+  const filteredExpenses = 
+    selectedCategory === 'all' 
+    ? allExpenses
+    : allExpenses.filter(e => e.category === selectedCategory)
 
   const csvText = `
   data,category,amount
@@ -190,6 +203,13 @@ function App() {
   2025-12-03,Food,300
   `
 
+  console.log(expenses);
+  console.log(totals.byCategory);
+  
+
+  const mergedExpenses = Object.entries(totals.byCategory).map(
+    ([category, amount]) => ({ category, amount })
+  );
   
 
   return (
@@ -211,7 +231,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {csvExpenses.map((row, idx) => (
+            {mergedExpenses.map((row, idx) => (
               <tr key={idx}>
                 <td>{row.date}</td>
                 <td>{row.category}</td>
@@ -225,13 +245,12 @@ function App() {
       <div>
         <select 
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}>
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
           <option value="all">Все</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}  
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
         </select>
       </div>
 
