@@ -6,6 +6,7 @@ function ExpensesTable ({ expenses }) {
                 <table border="1" cellPadding="6" >
                     <thead>
                         <tr>
+                            <th>Дата</th>
                             <th>Категория</th>
                             <th>Сумма</th>
                         </tr>
@@ -13,6 +14,7 @@ function ExpensesTable ({ expenses }) {
                     <tbody>
                         {expenses.map((row, idx) => (
                             <tr key={idx}>
+                                <td>{row.date ? new Date(row.date).toLocaleDateString('ru-RU') : 'Нет даты'}</td>
                                 <td>{row.category}</td>
                                 <td>{row.amount}</td>
                             </tr>

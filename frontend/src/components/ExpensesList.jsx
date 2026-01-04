@@ -8,7 +8,7 @@ function ExpensesList({ csvExpenses, onDelete }) {
       <ul>
         {csvExpenses.map((e, idx) => (
           <li key={idx}>
-            {e.date} - {e.category} - {e.amount}
+            {e.date ? new Date(e.date).toLocaleDateString('ru-RU') : 'Нет даты'} - {e.category} - {e.amount}
             <DeleteButton
                 onDelete={onDelete}
                 expenseIndex={idx}

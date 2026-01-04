@@ -9,8 +9,26 @@ function AddExpense({ onAdd }) {
     const validate = () => {
       const newErrors = {};
 
-      if (!date) newErrors.date = "Дата обязательна";
-      
+      if (!date) {
+        newErrors.date = "Дата обязательна";
+      } else {
+        // создаем обьект date из строки
+        const selectedDate = new Date(date);
+        // получаем сегодняшнюю дату
+        const today = new Date();
+        // вычисляем дату год назад
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(today.getFullYear() - 1);
+        // проверка что дата не слишком старая
+        if (selectedDate < oneYearAgo) {
+          newErrors.date = "Дата не может быть старше 1 года";
+        }
+        // проверяем, что дата не в будущем
+        if (selectedDate > today) {
+          newErrors.date = "Дата не может быть в будущем"
+        }  
+      }
+       
       if (!category) {
         newErrors.category = "Категория обязательна";
       } else if (category.length < 5) {

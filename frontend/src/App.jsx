@@ -76,7 +76,21 @@ function App() {
 
   const tableData = Object.entries(totals.byCategory)
     .filter(([category]) => selectedCategory === 'all' || category === selectedCategory)
-    .map(([category, amount]) => ({ category, amount })); 
+    .map(([category, amount]) => {
+      // все расходы этой категории
+      const categoryExpenses = allExpenses.filter(e => e.category === category);
+
+      // берем первую дату
+      const firstDate = categoryExpenses.length > 0
+        ? categoryExpenses[0].date
+        : '';
+
+      return {
+        category,
+        amount,
+        date: firstDate // добавляем дату
+      };
+    });
 
 
   // подсчет manualExpenses
@@ -103,6 +117,7 @@ function App() {
         const csvText = reader.result;
         // setText(csvText); // ✅ сохраняем сырой CSV в state
         const parsed = parseCsv(csvText)
+        console.log('Парсированные данные:', parsed);
         setCsvExpenses(prev => [...prev, ...parsed]); // ✅ сохраняем таблицу
       };
       
@@ -183,7 +198,7 @@ function App() {
         onChange={(e) => setSelectedCategory(e.target.value)}
       />
 
-      <ExpensesTable expenses={tableData} />
+      <ExpensesTable expenses={allExpenses} />
 
       <TotalsByCategory
         total={totals.total}
