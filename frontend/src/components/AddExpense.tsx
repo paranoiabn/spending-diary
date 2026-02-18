@@ -1,26 +1,22 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import styles from './styles/AddExpense.module.scss';
 
-type Dates = {
-  date:string;
+type AddExpenseProps = {
+  onAdd: (expense: { date: string; category: string; amount: number }) => void;
 };
 
-type Categories = {
+type Errors = {
+  date?:string;
+  category?: string;
+  amount?: string;
+};
 
-}
-
-type onAdds = {
-  date: string;
-  category: string;
-  amount: number;
-}
-
-function AddExpense({ onAdd }) {
-    const [date, setDate] = useState<Dates>('');
-    const [category, setCategory] = useState('');
-    const [amount, setAmount] = useState('');
-    const [errors, setErrors] = useState({});
+function AddExpense({ onAdd }: AddExpenseProps) {
+    const [date, setDate] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
+    const [amount, setAmount] = useState<string>('');
+    const [errors, setErrors] = useState<Errors>({});
 
     const validate = () => {
       const newErrors = {};
@@ -62,7 +58,7 @@ function AddExpense({ onAdd }) {
       return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: <React.HTMLElementType>) => {
+    const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault()
       if (!validate()) return;
 

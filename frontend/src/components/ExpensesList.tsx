@@ -1,6 +1,17 @@
 import DeleteButton from "./DeleteButton"
 
-function ExpensesList({ csvExpenses, onDelete }) {
+type Expense = {
+  date: string;
+  category: string;
+  amount: number;
+};
+
+type ExpensesListProps = {
+  csvExpenses: Expense[];
+  onDelete: (index: number) => void;
+};
+
+function ExpensesList({ csvExpenses, onDelete }: ExpensesListProps) {
   if (!csvExpenses || !Array.isArray(csvExpenses)) {
     return <div>Нет данных</div>;
   }

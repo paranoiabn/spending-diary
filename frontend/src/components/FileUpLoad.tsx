@@ -1,3 +1,8 @@
+type FileUpLoadProps = {
+    handleFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    selectedFiles: string[];
+};
+
 function FileUpLoad ({ handleFile, selectedFiles }) {
     return (
         <>

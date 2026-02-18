@@ -1,5 +1,14 @@
 import { theme } from "./styles/theme";
 
+type ButtonProps = {
+    children: React.ReactNode;
+    onClick?: () => void;
+    type?: 'button' | 'submit' | 'reset';
+    variant?: 'primary' | 'danger' | 'secondary';
+    disabled?: boolean;
+    className?: string;
+};
+
 function Button({
     children, // текст внутри кнопки
     onClick, // функция при клике
@@ -7,7 +16,7 @@ function Button({
     variant = 'primary', // вариант стиля
     disabled = false, // заблокирована ли кнопка
     className = '' // дополнительные css классы 
-}) {
+}: ButtonProps) {
     // возвращает стили в зависимости от variant
     const getVariantStyles = () => {
         switch (variant) {

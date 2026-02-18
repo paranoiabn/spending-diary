@@ -1,25 +1,11 @@
-// function CategorySelect ({ addManualExpense, manualExpenses, todayExpense }) {
-//     return (
-//         <>
-//         <AddExpense onAdd={addManualExpense} />
-// <ExpensesList expenses={manualExpenses} />
-// <div style={{ marginTop: 20 }}>
-// {!hasExpenses && (
-// <p>Расходов пока нет</p>
-// )}
 
-// {todayExpense && (
-// <p>
-// Сегодня: {todayExpense.category} — {todayExpense.amount}
-// </p>
-// )}
-// </div>
-// <div><strong>Итого:</strong> {totalManual}</div>
-// </>
-//     )
-// }
+type CategorySelectProps = {
+  categories: string[];
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  selectedCategory: string;
+};
 
-function CategorySelect ({ categories, onChange, selectedCategory }) {
+function CategorySelect ({ categories, onChange, selectedCategory }: CategorySelectProps) {
     return (
         <div>
         <select 

@@ -1,6 +1,16 @@
 import styles from './styles/ExpensesTable.module.scss';
 
-function ExpensesTable ({ expenses }) {
+type ExpenseRow = {
+    date: string;
+    category: string;
+    amount: number;
+};
+
+type ExpensesTableProps = {
+    expenses: ExpenseRow[];
+};
+
+function ExpensesTable ({ expenses }: ExpensesTableProps) {
     return (
         <>
             <div className={styles.csv_table}>

@@ -1,4 +1,9 @@
-function DeleteButton({ onDelete, expenseIndex }) {
+type DeleteButtonProps = {
+    onDelete: (index: number) => void;
+    expenseIndex: number;
+};
+
+function DeleteButton({ onDelete, expenseIndex }: DeleteButtonProps) {
     return (
         <button style={{ marginLeft:'12px', padding:'7px 10px',
             backgroundColor:'#d9534f', borderRadius:'12px',
