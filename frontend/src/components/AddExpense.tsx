@@ -2,8 +2,22 @@ import { useState } from "react";
 import Button from "./Button";
 import styles from './styles/AddExpense.module.scss';
 
+type Dates = {
+  date:string;
+};
+
+type Categories = {
+
+}
+
+type onAdds = {
+  date: string;
+  category: string;
+  amount: number;
+}
+
 function AddExpense({ onAdd }) {
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState<Dates>('');
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [errors, setErrors] = useState({});
@@ -48,7 +62,7 @@ function AddExpense({ onAdd }) {
       return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: <React.HTMLElementType>) => {
       e.preventDefault()
       if (!validate()) return;
 
