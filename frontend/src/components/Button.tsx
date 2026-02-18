@@ -8,7 +8,7 @@ function Button({
     disabled = false, // заблокирована ли кнопка
     className = '' // дополнительные css классы 
 }) {
-    // функция возвращает стили в зависимости от variant
+    // возвращает стили в зависимости от variant
     const getVariantStyles = () => {
         switch (variant) {
             case 'primary':
@@ -49,7 +49,7 @@ function Button({
                 fontWeight: '500',
                 cursor: disabled ? 'not-allowed' : 'pointer',
                 opacity: disabled ? 0.6 : 1,
-                transition: 'all 0.2s ease', // плавная анимация
+                transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
                 // при наведение мыши

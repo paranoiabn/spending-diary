@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo} from 'react'
+import React, { useState, useEffect, useMemo} from 'react'
 import { API_URL } from './api'
 import './App.css'
 import { calculateTotals } from './utils/calculateTotals';
@@ -19,16 +19,34 @@ import pageTable from './components/styles/ExpensesTable.module.scss';
 import CsvTable from './components/styles/CsvTable.module.scss';
 import ManualSection from './components/styles/ManualSection.module.scss';
 
+
 function App() {
-  const [ping, setPing] = useState("");
+
+  type Totals = {
+    total: number;
+    byCategory: Record<string, number>;
+  };
+
+  type CsvExpens = {
+    date: string;
+    category: string;
+    amount: number;
+  };
+
+  type ManualExpens = {
+    date: string;
+    category: string;
+    amount: number;
+  };
+
+  type Category = 'all' | string;
+
   const [text, setText] = useState("");
-  const [file, setFile] = useState(null);
-  const [totals, setTotals] = useState({ total: 0, byCategory: {} });
-  const [data, setData] = useState([]);
-  const [csvExpenses, setCsvExpenses] = useState([]);
-  const [manualExpenses, setManualExpenses] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [totals, setTotals] = useState<Totals>({ total: 0, byCategory: {} });
+  const [csvExpenses, setCsvExpenses] = useState<CsvExpens[]>([]);
+  const [manualExpenses, setManualExpenses] = useState<ManualExpens[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
   // useEffect(() => {
   //   fetch(`${API_URL}/ping`)
@@ -65,10 +83,6 @@ function App() {
     localStorage.setItem('expenses', JSON.stringify(dataToSave))
   }, [csvExpenses, manualExpenses]);
 
-  const addExpense = (expense) => {
-    // добавляем новый расход
-    setManualExpenses(prev => [...prev, expense])
-  }
 
   useEffect(() => {
     const totalsResult = calculateTotals(allExpenses)
@@ -101,7 +115,7 @@ function App() {
 
   // подсчет manualExpenses
 
-  const addManualExpense = (manualExpenses) => {
+  const addManualExpense = (manualExpenses: CsvExpens) => {
     setManualExpenses(prev => [...prev, manualExpenses])
   }
 
@@ -109,7 +123,7 @@ function App() {
   // отражение списка расходов
 
 
-  const handleFile = (e) => {
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
   
